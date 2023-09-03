@@ -6,36 +6,54 @@ import 'package:gymtracker/components/round_icon_button.dart';
 import 'package:provider/provider.dart';
 import 'package:gymtracker/models/exerc_data.dart';
 
-class AddExercScreen extends StatefulWidget {
+class EditExercScreen extends StatefulWidget {
   static const String id = 'add_exerc_screen';
+  final String exerName;
+  final int exerSeries;
+  final int exerReps;
+  EditExercScreen(
+      {Key? key,
+      required this.exerName,
+      required this.exerSeries,
+      required this.exerReps})
+      : super(key: key);
 
   @override
-  _InputPageState createState() => _InputPageState();
+  _InputPageState createState() =>
+      _InputPageState(name: exerName, series: exerSeries, reps: exerReps);
 }
 
-class _InputPageState extends State<AddExercScreen> {
-  int newExercSeries = 3;
-  int newExercReps = 8;
+class _InputPageState extends State<EditExercScreen> {
+  final String name;
+  final int series;
+  final int reps;
+  _InputPageState(
+      {Key? key, required this.name, required this.series, required this.reps});
+  late String ExercTitle = name;
+  late int newExercSeries = series;
+  late int newExercReps = reps;
 
   @override
   Widget build(BuildContext context) {
-    String? newExercTitle;
+    String? newExercTitle = ExercTitle;
+    String oldExercTitle = ExercTitle;
     int ExercSeries = newExercSeries;
     int ExercReps = newExercReps;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar Exercício'),
+        title: Text('Editar Exercício'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TextField(
             autofocus: true,
+            controller: TextEditingController()..text = oldExercTitle,
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 24.0),
             decoration: InputDecoration(
-              labelText: 'Nome do exercício',
+              labelText: "Nome do exercício",
               contentPadding:
                   EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
             ),
@@ -57,8 +75,8 @@ class _InputPageState extends State<AddExercScreen> {
                           style: kLabelTextStyle,
                         ),
                         Text(
-                          // series.toString(),
                           newExercSeries.toString(),
+                          // series.toString(),
                           style: kNumberTextStyle,
                         ),
                         Row(
@@ -69,7 +87,6 @@ class _InputPageState extends State<AddExercScreen> {
                                 onPressed: () {
                                   setState(() {
                                     newExercSeries--;
-                                    // newExercSeries = series;
                                   });
                                 }),
                             SizedBox(
@@ -80,7 +97,6 @@ class _InputPageState extends State<AddExercScreen> {
                               onPressed: () {
                                 setState(() {
                                   newExercSeries++;
-                                  // newExercSeries = series;
                                 });
                               },
                             ),
@@ -102,6 +118,7 @@ class _InputPageState extends State<AddExercScreen> {
                         ),
                         Text(
                           newExercReps.toString(),
+                          // reps.toString(),
                           style: kNumberTextStyle,
                         ),
                         Row(
@@ -113,8 +130,6 @@ class _InputPageState extends State<AddExercScreen> {
                                 setState(
                                   () {
                                     newExercReps--;
-                                    // newExercReps = repetitions;
-                                    print(newExercReps);
                                   },
                                 );
                               },
@@ -128,8 +143,6 @@ class _InputPageState extends State<AddExercScreen> {
                                 setState(
                                   () {
                                     newExercReps++;
-                                    // newExercReps = repetitions;
-                                    print(newExercReps);
                                   },
                                 );
                               },
@@ -148,14 +161,17 @@ class _InputPageState extends State<AddExercScreen> {
               backgroundColor: MaterialStatePropertyAll(Colors.lightBlueAccent),
             ),
             child: Text(
-              'Adicionar',
+              'Editar',
               style: TextStyle(
                 color: Colors.white,
               ),
             ),
             onPressed: () {
-              Provider.of<ExercData>(context, listen: false)
-                  .addExerc(newExercTitle, ExercSeries, ExercReps);
+              Provider.of<ExercData>(context, listen: false).modifyExerc(
+                  oldExercTitle,
+                  newExercTitle as String,
+                  ExercSeries,
+                  ExercReps);
               Navigator.pop(context);
             },
           ),
